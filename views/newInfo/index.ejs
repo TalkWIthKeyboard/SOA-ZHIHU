@@ -1,0 +1,83 @@
+<style type="text/css" rel="stylesheet">
+    *{
+        margin: 0;
+        padding: 0;
+    }
+
+    .box{
+        position: relative;
+        float: left;
+        margin-left: 10px;
+        margin-top: 10px;
+    }
+
+    .box .content{
+        padding: 10px;
+        border: 1px solid #ccc;
+        box-shadow: 0 0 5px #ccc;
+        border-radius: 5px;
+    }
+
+    .box .content img{
+        width: 190px;
+        height: auto;
+    }
+
+    .box .content .text-box{
+        width: 190px;
+        word-break: break-word;
+    }
+</style>
+
+<% for (var i = 0; i < stories.length; i++) {%>
+    <div class="box" href="#" data-id=<%= stories[i].id %>>
+        <div class="content">
+            <% var url = 'images/' + stories[i].id + '.jpg' %>
+            <img src=<%= url %>>
+            <div class="text-box">
+                <p><%= stories[i].title%></p>
+            </div>
+        </div>
+    </div>
+<%}%>
+
+<script type="text/javascript">
+
+    $(function () {
+        imgLocation()
+        clickBtn()
+    })
+
+    function imgLocation() {
+        var box = $(".box");
+        var boxWidth = box.eq(0).width();
+        var num = Math.floor($(window).width() / boxWidth);
+        var boxArr = [];
+        //index 盒子的位置 value 盒子的实例
+        box.each(function (index,value) {
+            var boxHeight = box.eq(index).height();
+            if (index < num){
+                boxArr[index] = boxHeight;
+            }else{
+                var minBoxHeight = Math.min.apply(null,boxArr);
+                var minBoxIndex = $.inArray(minBoxHeight, boxArr);
+                console.log(boxArr);
+                $(value).css({
+                    "position": "absolute",
+                    "top": minBoxHeight + 10,
+                    "left": box.eq(minBoxIndex).position().left
+                })
+                boxArr[minBoxIndex] += box.eq(index).height();
+            }
+        });
+    }
+    
+    function clickBtn() {
+        $('.box').click(function () {
+            var id = $(this).attr('data-id');
+            window.location.href = '/getNewFromId/' + id;
+        })
+    }
+
+
+</script>
