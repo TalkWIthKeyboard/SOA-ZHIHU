@@ -32,7 +32,7 @@
 <% for (var i = 0; i < stories.length; i++) {%>
     <div class="box" href="#" data-id=<%= stories[i].id %>>
         <div class="content">
-            <% var url = 'images/' + stories[i].id + '.jpg' %>
+            <% var url = 'http://zhihu.garychang.cn/tiny-pic?img=' + stories[i].images[0] %>
             <img src=<%= url %>>
             <div class="text-box">
                 <p><%= stories[i].title%></p>
@@ -51,23 +51,23 @@
     function imgLocation() {
         var box = $(".box");
         var boxWidth = box.eq(0).width();
-        var num = Math.floor($(window).width() / boxWidth);
+        var num = Math.floor(0.8 * $(window).width() / boxWidth);
         var boxArr = [];
         //index 盒子的位置 value 盒子的实例
         box.each(function (index,value) {
             var boxHeight = box.eq(index).height();
+            console.log(boxHeight)
             if (index < num){
-                boxArr[index] = boxHeight;
+                boxArr[index] = boxHeight + 50;
             }else{
                 var minBoxHeight = Math.min.apply(null,boxArr);
                 var minBoxIndex = $.inArray(minBoxHeight, boxArr);
-                console.log(boxArr);
                 $(value).css({
                     "position": "absolute",
                     "top": minBoxHeight + 10,
                     "left": box.eq(minBoxIndex).position().left
                 })
-                boxArr[minBoxIndex] += box.eq(index).height();
+                boxArr[minBoxIndex] += box.eq(index).height() + 10;
             }
         });
     }

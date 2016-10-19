@@ -8,9 +8,22 @@
     <link rel="stylesheet" href="/libs/bootstrap/dist/css/bootstrap-theme.min.css"/>
     <script src="/libs/jquery/dist/jquery.min.js"></script>
     <script src="/libs/bootstrap/dist/js/bootstrap.min.js"></script>
-
+    <style>
+        .basic-content{
+            margin-left: 10%;
+            margin-right: 10%;
+        }
+        .navbar{
+            height: 50px;
+            margin-bottom: 0px;
+            background-color: #00a1e8;
+        }
+    </style>
 <body>
-    <div>
+    <nav class="navbar navbar-inverse" role="navigation">
+        <a class="navbar-brand" href="/latestNew">知乎日报</a>
+    </nav>
+    <div class="basic-content">
         <%- body %>
     </div>
 </body>

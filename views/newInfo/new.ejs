@@ -1,7 +1,42 @@
 <link rel="stylesheet" href="http://news-at.zhihu.com/css/news_qa.auto.css"></link>
 
+<style>
+
+    .comment{
+        padding: 20px;
+    }
+
+    .box{
+        position: relative;
+        float: left;
+    }
+
+    .box img{
+        margin: 0;
+        padding-right: 15px;
+    }
+</style>
+
 <div class="content">
     <div class="body">
         <%- html %>
+    </div>
+    <div class="comment">
+        <table class="table table-striped">
+            <tbody>
+                <% for (var i = 0; i < comments.length; i++) {%>
+                    <tr>
+                        <td>
+                            <div class="box">
+                                <% var url = 'http://zhihu.garychang.cn/tiny-pic?img=' + comments[i].avatar %>
+                                <img src=<%= url%>>
+                                <p><%= comments[i].author %></p>
+                            </div>
+                        </td>
+                        <td><%= comments[i].content%></td>
+                    </tr>
+                <%}%>
+            </tbody>
+        </table>
     </div>
 </div>
