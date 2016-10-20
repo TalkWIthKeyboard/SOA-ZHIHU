@@ -8,11 +8,11 @@ var format = require('js-format');
 var request = require('request');
 var fs = require('fs');
 
-const latest_new_api = 'http://news-at.zhihu.com/api/4/news/latest';
-const new_by_id_api = 'http://news-at.zhihu.com/api/4/news/%s';
-const comment_by_id_api = 'http://news-at.zhihu.com/api/4/story/%s/long-comments';
-const short_by_id_api = 'http://news-at.zhihu.com/api/4/story/%s/short-comments';
-const dir = 'public/images';
+var latest_new_api = 'http://news-at.zhihu.com/api/4/news/latest';
+var new_by_id_api = 'http://news-at.zhihu.com/api/4/news/%s';
+var comment_by_id_api = 'http://news-at.zhihu.com/api/4/story/%s/long-comments';
+var short_by_id_api = 'http://news-at.zhihu.com/api/4/story/%s/short-comments';
+var dir = 'public/images';
 
 const regex = /((https|http):\/\/pic\d.*\.(png|jpg))/ig;
 
