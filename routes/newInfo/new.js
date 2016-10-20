@@ -14,7 +14,7 @@ var comment_by_id_api = 'http://news-at.zhihu.com/api/4/story/%s/long-comments';
 var short_by_id_api = 'http://news-at.zhihu.com/api/4/story/%s/short-comments';
 var dir = 'public/images';
 
-const regex = /((https|http):\/\/pic\d.*\.(png|jpg))/ig;
+var regex = /((https|http):\/\/pic\d.*\.(png|jpg))/ig;
 
 
 pub.getLatestNew = (req, res) =>{
