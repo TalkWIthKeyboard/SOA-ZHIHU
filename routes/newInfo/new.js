@@ -11,6 +11,7 @@ var fs = require('fs');
 const latest_new_api = 'http://news-at.zhihu.com/api/4/news/latest';
 const new_by_id_api = 'http://news-at.zhihu.com/api/4/news/%s';
 const comment_by_id_api = 'http://news-at.zhihu.com/api/4/story/%s/long-comments';
+const short_by_id_api = 'http://news-at.zhihu.com/api/4/story/%s/short-comments';
 const dir = 'public/images';
 
 const regex = /((https|http):\/\/pic\d.*\.(png|jpg))/ig;
@@ -51,9 +52,20 @@ pub.getNewFromId = (req, res) =>{
             for (var i = 0; i < comments.length; i++) {
                 comments[i].time = stampToString(comments[i].time);
             }
-            res.render('newInfo/new.ejs',{
-                'html' : html,
-                'comments': comments
+
+            //获取该新闻的短评论
+            url = format(short_by_id_api,[id]);
+            request(url, function (error, response, body) {
+                var short_json = JSON.parse(body);
+                var shorts = short_json.comments;
+                for (var i = 0; i < shorts.length; i++) {
+                    shorts[i].time = stampToString(shorts[i].time);
+                }
+                comments = shorts.concat(comments);
+                res.render('newInfo/new.ejs',{
+                    'html' : html,
+                    'comments': comments
+                })
             })
         })
     })

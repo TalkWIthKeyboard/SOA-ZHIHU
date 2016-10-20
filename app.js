@@ -26,7 +26,7 @@ app.locals.moment = require('moment');
 //监听端口
 app.listen(port);
 
-const modules = require('./routes/module-router');
+var modules = require('./routes/module-router');
 app.use('/',modules);
 
 module.exports = app;
