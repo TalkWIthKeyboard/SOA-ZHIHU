@@ -7,6 +7,8 @@ var pub = {};
 var format = require('js-format');
 var request = require('request');
 var fs = require('fs');
+var select = require('xpath.js');
+var dom = require('xmldom').DOMParser;
 
 var latest_new_api = 'http://news-at.zhihu.com/api/4/news/latest';
 var new_by_id_api = 'http://news-at.zhihu.com/api/4/news/%s';
@@ -15,7 +17,9 @@ var short_by_id_api = 'http://news-at.zhihu.com/api/4/story/%s/short-comments';
 var dir = 'public/images';
 
 var regex = /((https|http):\/\/pic\d.*\.(png|jpg))/ig;
-
+var BAIDU_MOVIE_API = "http://api.map.baidu.com/telematics/v3/movie?qt=hot_movie&location=%s,%s&ak=l28tQqC0MN6pK7RWf4kjt0gnzUhXUNmp";
+var BAIDU_CITY_API = "http://api.map.baidu.com/geocoder/v2/?ak=l28tQqC0MN6pK7RWf4kjt0gnzUhXUNmp&location=%s,%s&output=XML";
+var BAIDU_WEATHER_API = "http://api.map.baidu.com/telematics/v3/weather?location=%s,%s&ak=l28tQqC0MN6pK7RWf4kjt0gnzUhXUNmp";
 
 pub.getLatestNew = (req, res) =>{
 
@@ -29,6 +33,65 @@ pub.getLatestNew = (req, res) =>{
         res.render('newInfo/index.ejs',{
             'stories': stories
         })
+    })
+};
+
+pub.getHotMovie = (req, res) => {
+
+    var longitude = req.params.lo;
+    var latitude = req.params.la;
+    var api = format(BAIDU_MOVIE_API,[latitude,longitude]);
+    request(api,function (error, response, body) {
+
+        var doc = new dom().parseFromString(body);
+        var movie_name = select(doc,'//movie_name');
+        var movie_release_date = select(doc,'//movie_release_date');
+        var movie_score = select(doc,'//movie_score');
+        var movie_picture = select(doc,'//movie_picture');
+
+        var list = [];
+        for (var index = 0; index < movie_name.length - 1; index++){
+            var info = {};
+            info['movie_name'] = getData(movie_name[index]);
+            info['movie_release_date'] = getData(movie_release_date[index]);
+            info['movie_score'] = getData(movie_score[index]);
+            info['movie_picture'] = getData(movie_picture[index]);
+            list.push(info);
+        }
+        console.log(list);
+    })
+};
+
+
+pub.getPosition = (req, res) => {
+
+    var longitude = req.params.lo;
+    var latitude = req.params.la;
+    var api = format(BAIDU_CITY_API,[longitude,latitude]);
+    request(api, function (error, response, body) {
+
+        var doc = new dom().parseFromString(body);
+        var info = {};
+        info['address'] = getData(select(doc,'//formatted_address')[0]);
+        info['description'] = getData(select(doc, '//sematic_description')[0]);
+        res.json(info);
+    })
+};
+
+
+pub.getWeather = (req, res) => {
+
+    var longitude = req.params.lo;
+    var latitude = req.params.la;
+    var api = format(BAIDU_WEATHER_API,[latitude,longitude]);
+    request(api, function (error, response, body) {
+
+        var doc = new dom().parseFromString(body);
+        var info = {};
+        info['weather'] = getData(select(doc,'//weather')[0]);
+        info['wind'] = getData(select(doc,'//wind')[0]);
+        info['temperature'] = getData(select(doc,'//temperature')[0]);
+        res.json(info);
     })
 };
 
@@ -75,6 +138,10 @@ function stampToString(timestamp) {
     var newDate = new Date();
     newDate.setTime(timestamp * 1000);
     return newDate.toDateString()
+}
+
+function getData(elem) {
+    return elem.firstChild.data;
 }
 
 

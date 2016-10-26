@@ -14,7 +14,7 @@
             margin-right: 10%;
         }
         .navbar{
-            height: 50px;
+            height: 80px;
             margin-bottom: 0px;
             background: #00a1e8;
             border-radius: 0;
@@ -22,18 +22,81 @@
         }
         nav a{
             color: white!important;
+            font-size: 35px!important;
+            margin-top: 13px;
         }
         nav a:hover{
             color: black!important;
+            font-size: 35px;
+        }
+
+        .info-box{
+            float: right;
+            margin-top: 15px;
+        }
+
+        .info-box div p{
+            margin-right: 30px;
+            margin-bottom: 0;
+            font-size: 12px!important;
+            color: white;
+            float: right;
         }
     </style>
 <body>
     <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
         <a class="navbar-brand" href="/latestNew">知乎日报</a>
+        <div class="info-box">
+            <div class="row">
+                <p id="user-position"> 加载中.. </p>
+            </div>
+            <div class="row">
+                <p id="user-weather"></p>
+            </div>
+            <div class="row">
+                <p id="user-temperature"></p>
+            </div>
+        </div>
     </nav>
     <div class="basic-content">
         <%- body %>
     </div>
 </body>
+
+<script>
+    $(function () {
+        getLocation()
+    })
+
+    function getLocation()  {
+        if (navigator.geolocation)  {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        }
+        else{
+            x.innerHTML="Geolocation is not supported by this browser.";
+        }
+    }
+
+    function showPosition(position)
+    {
+        var positionUrl = position.coords.latitude + '/' + position.coords.longitude;
+        $.ajax({
+            url: '/getPosition/' + positionUrl,
+            type: 'GET',
+            success: function (data) {
+                $('#user-position').html(data.address);
+            }
+        })
+
+        $.ajax({
+            url: '/getWeather/' + positionUrl,
+            type: 'GET',
+            success: function (data) {
+                $('#user-weather').html(data.weather);
+                $('#user-temperature').html(data.temperature);
+            }
+        })
+    }
+</script>
 
 </html>

@@ -58,7 +58,7 @@
             var boxHeight = box.eq(index).height();
             console.log(boxHeight)
             if (index < num){
-                boxArr[index] = boxHeight + 50;
+                boxArr[index] = boxHeight + 80;
             }else{
                 var minBoxHeight = Math.min.apply(null,boxArr);
                 var minBoxIndex = $.inArray(minBoxHeight, boxArr);
@@ -78,6 +78,4 @@
             window.location.href = '/getNewFromId/' + id;
         })
     }
-
-
 </script>
