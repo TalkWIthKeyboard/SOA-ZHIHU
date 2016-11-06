@@ -2,6 +2,8 @@
 
 SOA课程作业，作业要求利用4个API制作一个小东西。该项目利用<font color=red>**知乎日报api**</font> + <font color=red>**百度地图、天气、电影api**</font>，以<font color=blue>**express框架**</font>为基础制作了一个网站。
 
+**访问地址： zhihu.sw77.live**
+
 ## 使用方法
 ### 依赖安装
 + 确保git环境
