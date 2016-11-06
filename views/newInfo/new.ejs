@@ -7,24 +7,33 @@
     }
 
     .user-info{
-        width: 65px;
+        width: 90px;
     }
 
     .box{
         position: relative;
         float: left;
+        text-align: center;
     }
 
     .box img{
         margin: 0;
-        padding-right: 15px;
-        height: 50px;
-        width: 65px;
+        height: 70px;
+        width: 70px;
     }
 
     .text-box{
-        width: 65px;
+        width: 90px;
         word-break: break-word;
+    }
+
+    .text-box .box-p{
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+    .span-likes{
+        color: red;
     }
 </style>
 
@@ -42,7 +51,14 @@
                                 <% var url = 'http://zhihu.garychang.cn/tiny-pic?img=' + comments[i].avatar %>
                                 <img src=<%= url%>>
                                 <div class="text-box">
-                                    <p><%= comments[i].author%></p>
+                                    <div class="box-p"><span><%= comments[i].author%></span></div>
+                                    <div class="box-p">
+                                        <span><%= comments[i].time%></span>
+                                    </div>
+                                    <div class="box-p">
+                                        <span class="span-likes"><%= comments[i].likes%></span>
+                                        <span>赞</span>
+                                    </div>
                                 </div>
                             </div>
                         </td>
