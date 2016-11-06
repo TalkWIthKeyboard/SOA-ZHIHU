@@ -26,27 +26,35 @@
     .box .content .text-box{
         width: 190px;
         word-break: break-word;
+        text-align: center;
     }
+
+    .movie-name{
+        margin-top: 3px;
+        font-size: 20px;
+    }
+
 </style>
 
-<% for (var i = 0; i < stories.length; i++) {%>
-    <div class="box" href="#" data-id=<%= stories[i].id %>>
-        <div class="content">
-            <% var url = 'http://www.beihaiw.com/pic.php?url=' + stories[i].images[0] %>
-            <img src=<%= url %>>
-            <div class="text-box">
-                <p><%= stories[i].title%></p>
-            </div>
+<% for (var i = 0; i < movies.length; i++) {%>
+<div class="box">
+    <div class="content">
+        <% var url = 'http://www.beihaiw.com/pic.php?url=' + movies[i].movie_picture %>
+        <img src=<%= url %>>
+        <div class="text-box">
+            <p class="movie-name"><%= movies[i].movie_name%></p>
+            <p>影片得分：<%= movies[i].movie_score%></p>
+            <p>上映时间：<%= movies[i].movie_release_date%></p>
         </div>
     </div>
+</div>
 <%}%>
 
 <script type="text/javascript">
 
     $(function () {
         window.onload = function () {
-            imgLocation()
-            clickBtn()
+            imgLocation();
         }
     })
 
@@ -58,7 +66,6 @@
         //index 盒子的位置 value 盒子的实例
         box.each(function (index,value) {
             var boxHeight = box.eq(index).height();
-            console.log(boxHeight)
             if (index < num){
                 boxArr[index] = boxHeight + 80;
             }else{
@@ -67,17 +74,11 @@
                 $(value).css({
                     "position": "absolute",
                     "top": minBoxHeight + 10,
-                    "left": box.eq(minBoxIndex).position().left
+                    "left": box.eq(minBoxIndex).position().left,
                 })
                 boxArr[minBoxIndex] += box.eq(index).height() + 10;
             }
         });
     }
-    
-    function clickBtn() {
-        $('.box').click(function () {
-            var id = $(this).attr('data-id');
-            window.location.href = '/getNewFromId/' + id;
-        })
-    }
+
 </script>

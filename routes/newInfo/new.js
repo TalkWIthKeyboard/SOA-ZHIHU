@@ -21,6 +21,11 @@ var BAIDU_MOVIE_API = "http://api.map.baidu.com/telematics/v3/movie?qt=hot_movie
 var BAIDU_CITY_API = "http://api.map.baidu.com/geocoder/v2/?ak=l28tQqC0MN6pK7RWf4kjt0gnzUhXUNmp&location=%s,%s&output=XML";
 var BAIDU_WEATHER_API = "http://api.map.baidu.com/telematics/v3/weather?location=%s,%s&ak=l28tQqC0MN6pK7RWf4kjt0gnzUhXUNmp";
 
+pub.basicUrl = (req, res) => {
+
+    res.redirect('/latestNew');
+};
+
 pub.getLatestNew = (req, res) =>{
 
     request(latest_new_api,function (error, response, body) {
@@ -58,7 +63,18 @@ pub.getHotMovie = (req, res) => {
             info['movie_picture'] = getData(movie_picture[index]);
             list.push(info);
         }
-        console.log(list);
+
+        list.sort(function (a,b) {
+            if (strToDate(b['movie_release_date']) > strToDate(a['movie_release_date'])){
+                return 1
+            } else {
+                return -1
+            }
+        });
+
+        res.render('newInfo/movie.ejs',{
+            'movies': list
+        })
     })
 };
 
@@ -141,9 +157,18 @@ function stampToString(timestamp) {
 }
 
 function getData(elem) {
-    return elem.firstChild.data;
+    if (elem.firstChild) {
+        return elem.firstChild.data;
+    } else {
+        return null;
+    }
 }
 
+function strToDate(str){
+    var list = str.split('-');
+    var date = new Date(list[0],list[1]-1,list[2]);
+    return date;
+}
 
 function downloadImg(url,id) {
 

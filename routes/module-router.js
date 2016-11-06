@@ -7,6 +7,7 @@ var router = require('express').Router();
 
 var newInfo = require('./newInfo/new');
 
+router.get('/',newInfo.basicUrl);
 router.get('/latestNew',newInfo.getLatestNew);
 router.get('/getNewFromId/:id',newInfo.getNewFromId);
 router.get('/getHotMovie/:lo/:la',newInfo.getHotMovie);

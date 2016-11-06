@@ -20,14 +20,26 @@
             border-radius: 0;
             border: 1px solid #00a1e8;
         }
-        nav a{
+        nav .main-title{
             color: white!important;
             font-size: 35px!important;
             margin-top: 13px;
         }
-        nav a:hover{
+
+        nav .main-title:hover{
             color: black!important;
             font-size: 35px;
+        }
+
+        nav .second-title{
+            color: white!important;
+            font-size: 20px!important;
+            margin-top: 19px;
+        }
+
+        nav .second-title:hover{
+            color: black!important;
+            font-size: 20px;
         }
 
         .info-box{
@@ -35,9 +47,9 @@
             margin-top: 15px;
         }
 
-        .info-box div p{
-            margin-right: 30px;
-            margin-bottom: 0;
+        .info-box div span{
+            margin-right: 30px ;
+            margin-bottom: 0 ;
             font-size: 12px!important;
             color: white;
             float: right;
@@ -45,16 +57,17 @@
     </style>
 <body>
     <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
-        <a class="navbar-brand" href="/latestNew">知乎日报</a>
+        <a class="navbar-brand main-title" href="/latestNew">知乎日报</a>
+        <a class="navbar-brand second-title" href="/getHotMovie/31.284343/121.2093477">热门电影</a>
         <div class="info-box">
             <div class="row">
-                <p id="user-position"> 加载中.. </p>
+                <span id="user-position"> 加载中.. </span>
             </div>
             <div class="row">
-                <p id="user-weather"></p>
+                <span id="user-weather"></span>
             </div>
             <div class="row">
-                <p id="user-temperature"></p>
+                <span id="user-temperature"></span>
             </div>
         </div>
     </nav>
@@ -79,23 +92,74 @@
 
     function showPosition(position)
     {
-        var positionUrl = position.coords.latitude + '/' + position.coords.longitude;
-        $.ajax({
-            url: '/getPosition/' + positionUrl,
-            type: 'GET',
-            success: function (data) {
-                $('#user-position').html(data.address);
-            }
-        })
+        var la = window.localStorage.getItem('la') || false;
+        var lo = window.localStorage.getItem('lo') || false;
+        var pos = window.localStorage.getItem('position') || false;
+        var weather = window.localStorage.getItem('weather') || false;
+        var temperature = window.localStorage.getItem('temperature') || false;
+        var date = window.localStorage.getItem('date') || false;
+        var now = new Date();
 
-        $.ajax({
-            url: '/getWeather/' + positionUrl,
-            type: 'GET',
-            success: function (data) {
-                $('#user-weather').html(data.weather);
-                $('#user-temperature').html(data.temperature);
+        // 如果是同一个地方同一天直接获取缓存
+        if (isSamePosition(la,lo,position.coords) && isSameDate(date,now)) {
+            $('#user-position').html(pos);
+            $('#user-weather').html(weather);
+            $('#user-temperature').html(temperature);
+        } else {
+            // 换了一个地方或者过了一段时间就重新定位
+            ajaxValue(position.coords)
+        }
+
+        function ajaxValue(position){
+            var positionUrl = position.latitude + '/' + position.longitude;
+            window.localStorage.setItem('la', position.latitude);
+            window.localStorage.setItem('lo', position.longitude);
+            window.localStorage.setItem('date', now);
+            $.ajax({
+                url: '/getPosition/' + positionUrl,
+                type: 'GET',
+                success: function (data) {
+                    $('#user-position').html(data.address);
+                    window.localStorage.setItem('position',data.address);
+                }
+            })
+
+            $.ajax({
+                url: '/getWeather/' + positionUrl,
+                type: 'GET',
+                success: function (data) {
+                    $('#user-weather').html(data.weather);
+                    $('#user-temperature').html(data.temperature);
+                    window.localStorage.setItem('weather',data.weather);
+                    window.localStorage.setItem('temperature',data.temperature);
+                }
+            })
+        }
+
+        function isSamePosition(oldLa,oldLo,newPosition){
+            // 浮动区间0.0003
+            if (!oldLa){
+                return false
+            } else {
+                if ( Math.abs(oldLa - newPosition.latitude) <= 0.0003 &&
+                        Math.abs(oldLo - newPosition.longitude) <= 0.0003) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
-        })
+        }
+
+        function isSameDate(date1,date2) {
+            if (!date1){
+                return false;
+            } else {
+                var date = new Date(date1);
+                return (date.getFullYear() == date2.getFullYear() &&
+                        date.getMonth() == date2.getMonth() &&
+                        date.getDate() == date2.getDate())
+            }
+        }
     }
 </script>
 
